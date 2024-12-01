@@ -1,6 +1,5 @@
 main = do
   contents <- readFile "day1input1.txt"
-  print contents
   print $ fmap parseRow $ fmap words $ lines contents
 
 parseRow :: [String] -> (Int, Int)
