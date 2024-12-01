@@ -7,7 +7,8 @@ main = do
   let left2 = sort left
   let right2 = sort right
   let distances = fmap getDistance $ zip left2 right2
-  print distances
+  let distanceSum = foldl (+) 0 distances
+  print distanceSum
 
 parseRow :: [String] -> (Int, Int)
 parseRow (first:second:_) = (read first, read second)
