@@ -1,6 +1,7 @@
 import Data.List
+import qualified Data.Map.Strict as Map
 
-main = do
+part1 = do
   contents <- readFile "day1input1.txt"
   let pairs = fmap parseRow $ fmap words $ lines contents
   let (left, right) = splitRow ([],[]) pairs
@@ -9,6 +10,14 @@ main = do
   let distances = fmap getDistance $ zip left2 right2
   let distanceSum = foldl (+) 0 distances
   print distanceSum
+
+part2 = do
+  contents <- readFile "day1input1.txt"
+  let pairs = fmap parseRow $ fmap words $ lines contents
+  let (left, right) = splitRow ([],[]) pairs
+  let searchHaystack = sumCountsMatching right
+  let matchedmultiples = foldl (+) 0 $ fmap searchHaystack left
+  print matchedmultiples
 
 parseRow :: [String] -> (Int, Int)
 parseRow (first:second:_) = (read first, read second)
@@ -22,4 +31,7 @@ splitRow input (x:xs) =
 
 getDistance :: (Int, Int) -> Int
 getDistance (x, y) = abs $ y - x
+
+sumCountsMatching :: Integral a => [a] -> a -> a
+sumCountsMatching haystack needle = foldl (+) 0 [ x | x <- haystack, x == needle]
 
