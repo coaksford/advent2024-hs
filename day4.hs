@@ -11,7 +11,7 @@ sample =  [ "MMMSXXMASM",
             "MAMMMXMMMM",
             "MXMXAXMASX" ]
 
-day1 = do
+part1 = do
   contents <- readFile "input4.txt"
   let searchArea = lines contents
   print $ search searchArea
