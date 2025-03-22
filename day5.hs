@@ -51,6 +51,34 @@ part1 = do
   let pageSum = foldl (+) 0 (fmap (getMiddleIfOk rules) pageSets)
   print pageSum
 
+isWrong :: [Rule] -> PageSet -> Bool
+isWrong rules pageSet = not (checkAllRules rules pageSet)
+
+fixPageSetByAllRules :: [Rule] -> PageSet -> PageSet
+fixPageSetByAllRules [] pageSet = pageSet
+fixPageSetByAllRules (rule:rules) pageSet = if ruleApplies rule pageSet
+                                  then fixPageSetByAllRules rules pageSet
+                                  else fixPageSetByAllRules rules (fixPageSet rule pageSet)
+
+fixPageSet :: Rule -> PageSet -> PageSet
+fixPageSet _ [] = []
+fixPageSet (before, successor) (page:pages) = if page == successor
+                                            then before:successor:(fixPageSet (before,successor) pages)
+                                            else  if page == before
+                                                  then fixPageSet (before,successor) pages
+                                                  else page:(fixPageSet (before,successor) pages)
+
+part2 = do
+  contents <- readFile "day5input.txt"
+  let input = lines contents
+  let (ruleStrings, pageSetStrings) = separateRulesFromPages input
+  let rules = fmap parseRule ruleStrings
+  let pageSets = fmap parsePageSet pageSetStrings
+  let wrongPageSets = filter (isWrong rules) pageSets
+  -- I'm not proud that I had to fix it twice to get the right answer, but it worked.
+  let fixedPageSets = fmap (fixPageSetByAllRules rules) $ fmap (fixPageSetByAllRules rules) wrongPageSets
+  let pageSum = foldl (+) 0 (fmap getMiddlePage fixedPageSets)
+  print pageSum
 
 -- cabal update
 -- cabal install --lib split
